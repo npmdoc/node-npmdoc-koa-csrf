@@ -1,0 +1,152 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/koajs/csrf">koa-csrf (v3.0.5)</a>
+</h1>
+<h4>CSRF tokens for koa</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.koa-csrf">module koa-csrf</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.koa-csrf.default">
+            function <span class="apidocSignatureSpan">koa-csrf.</span>default
+            <span class="apidocSignatureSpan">(opts)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.koa-csrf" id="apidoc.module.koa-csrf">module koa-csrf</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.koa-csrf.default" id="apidoc.element.koa-csrf.default">
+        function <span class="apidocSignatureSpan">koa-csrf.</span>default
+        <span class="apidocSignatureSpan">(opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function CSRF(opts) {
+  var _this = this;
+
+  _classCallCheck(this, CSRF);
+
+  this.middleware = function (ctx, next) {
+
+    ctx.__defineGetter__('csrf', function () {
+
+      if (ctx._csrf) return ctx._csrf;
+
+      if (!ctx.session) return null;
+
+      if (!ctx.session.secret) ctx.session.secret = _this.tokens.secretSync();
+
+      ctx._csrf = _this.tokens.create(ctx.session.secret);
+
+      return ctx._csrf;
+    });
+
+    ctx.response.__defineGetter__('csrf', function () {
+      return ctx.csrf;
+    });
+
+    if (_this.opts.excludedMethods.indexOf(ctx.method) !== -1) return next();
+
+    if (!ctx.session.secret) ctx.session.secret = _this.tokens.secretSync();
+
+    var bodyToken = ctx.request.body &amp;&amp; typeof ctx.request.body._csrf === 'string' ? ctx.request.body._csrf : false;
+
+    var token = bodyToken || !_this.opts.disableQuery &amp;&amp; ctx.query &amp;&amp; ctx.query._csrf || ctx.get('csrf-token') || ctx.get('xsrf-
+token') || ctx.get('x-csrf-token') || ctx.get('x-xsrf-token');
+
+    if (!token) return ctx.throw(_this.opts.invalidTokenStatusCode, _this.opts.invalidTokenMessage);
+
+    if (!_this.tokens.verify(ctx.session.secret, token)) return ctx.throw(_this.opts.invalidTokenStatusCode, _this.opts.invalidTokenMessage
+);
+
+    return next();
+  };
+
+  this.opts = opts || {};
+
+  if (!this.opts.invalidSessionSecretMessage) this.opts.invalidSessionSecretMessage = 'Invalid session secret';
+
+  if (!this.opts.invalidSessionSecretStatusCode) this.opts.invalidSessionSecretStatusCode = 403;
+
+  if (!this.opts.invalidTokenMessage) this.opts.invalidTokenMessage = 'Invalid CSRF token';
+
+  if (!this.opts.invalidTokenStatusCode) this.opts.invalidTokenStatusCode = 403;
+
+  if (!this.opts.excludedMethods) this.opts.excludedMethods = ['GET', 'HEAD', 'OPTIONS'];
+
+  if (typeof this.opts.disableQuery !== 'boolean') this.opts.disableQuery = false;
+
+  this.tokens = (0, _csrf2.default)(opts);
+
+  return this.middleware;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
